@@ -2,6 +2,7 @@ package com.jenil.learning.webservices.restfulwebservices.User;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import org.springframework.hateoas.RepresentationModel;
@@ -14,6 +15,7 @@ public class User extends RepresentationModel<User> {
     private String name;
 
     @Past
+    @JsonIgnore
     private Date birthDate;
 
     public User(Integer id, String name, Date birthDate) {
