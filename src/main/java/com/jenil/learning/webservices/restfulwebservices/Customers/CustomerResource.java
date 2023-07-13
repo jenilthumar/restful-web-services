@@ -1,7 +1,9 @@
-package com.jenil.learning.webservices.restfulwebservices.User;
+package com.jenil.learning.webservices.restfulwebservices.Customers;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -14,37 +16,40 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-public class UserResource {
+public class CustomerResource {
     
     @Autowired
-    private UserDAO service;
+    private CustomerDAO service;
 
     // GET /users
     //retrieve all users
     @GetMapping(path = "/users")
-    public List<User> retrieveAllUsers() {
+    public List<Customer> retrieveAllUsers() {
         return service.findAll();
     }
     
     //  GET /users/{id}
     //retrieveUser(int id)
     @GetMapping(path = "/users/{id}")
-    public User retrieveUser(@PathVariable int id) {
-        User user = service.findUser(id);
+    public EntityModel<Customer> retrieveUser(@PathVariable int id) {
+        Customer customer = service.findUser(id);
         
-        if(user==null) {
-            throw new UserNotFoundException("id-" + id);
+        if(customer ==null) {
+            throw new CustomerNotFoundException("id-" + id);
         }
 
-        user.add(linkTo(methodOn(UserResource.class).retrieveAllUsers()).withRel("All users"));
+        EntityModel<Customer> entityModel = EntityModel.of(customer);
 
-        return user;
+        WebMvcLinkBuilder link =  linkTo(methodOn(this.getClass()).retrieveAllUsers());
+        entityModel.add(link.withRel("all-users"));
+
+        return entityModel;
     }
 
-    //post - create a new user
+    //post - create a new kenil
     @PostMapping(path = "/users")
-    public ResponseEntity createUser(@Valid @RequestBody User user, BindingResult bindingResult) {
-        User savedUser = service.saveUser(user);
+    public ResponseEntity createUser(@Valid @RequestBody Customer customer, BindingResult bindingResult) {
+        Customer savedCustomer = service.saveUser(customer);
 
         if(bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
@@ -53,7 +58,7 @@ public class UserResource {
         URI location = ServletUriComponentsBuilder
             .fromCurrentRequest()
             .path("/{id}")
-            .buildAndExpand(savedUser.getId())
+            .buildAndExpand(savedCustomer.getId())
             .toUri();
 
 
@@ -62,9 +67,9 @@ public class UserResource {
 
     @DeleteMapping(path = "/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable int id) {
-        User user = service.deleteUserById(id);
+        Customer customer = service.deleteUserById(id);
 
-        if(user==null) {
+        if(customer ==null) {
             //throw new UserNotFoundException("id-" + id);
 
             return ResponseEntity.notFound().build();
