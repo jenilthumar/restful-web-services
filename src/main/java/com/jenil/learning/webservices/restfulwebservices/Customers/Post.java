@@ -16,6 +16,8 @@ public class Post {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    @JsonBackReference
     private Customer customer;
 
     public Integer getId() {
@@ -34,11 +36,11 @@ public class Post {
         this.description = description;
     }
 
-    public Customer getUser() {
+    public Customer getCustomer() {
         return customer;
     }
 
-    public void setUser(Customer customer) {
+    public void setCustomer(Customer customer) {
         this.customer = customer;
     }
 

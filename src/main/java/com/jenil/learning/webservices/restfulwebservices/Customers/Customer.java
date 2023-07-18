@@ -30,6 +30,7 @@ public class Customer {
 
 
     @OneToMany(mappedBy = "customer")
+    @JsonBackReference
     private List<Post> posts;
 
     protected Customer() {
