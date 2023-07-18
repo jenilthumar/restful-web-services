@@ -3,6 +3,7 @@ package com.jenil.learning.webservices.restfulwebservices.Customers;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +26,7 @@ public class Customer {
     @Past
     @Schema(description = "BOD should be in the past")
     private LocalDate birthDate;
+
 
 
     @OneToMany(mappedBy = "customer")

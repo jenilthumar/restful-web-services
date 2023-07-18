@@ -11,6 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -41,6 +42,16 @@ public class CustomerJPAResource {
 
     }
 
+    @GetMapping(path = "jpa/users/{id}/posts")
+    public List<Post> retrieveAllUsers(@PathVariable Integer id) {
+
+        Optional<Customer> optionalCustomer = customerRepository.findById(id);
+
+        if(!optionalCustomer.isPresent()) {
+            throw new CustomerNotFoundException("id: " + id);
+        }
+        return optionalCustomer.get().getPosts();
+    }
 
     // Unfinished, Need revamp
     @PostMapping(path = "jpa/users")

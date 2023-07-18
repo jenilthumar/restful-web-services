@@ -1,5 +1,7 @@
 package com.jenil.learning.webservices.restfulwebservices.Customers;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.apache.catalina.User;
 
@@ -11,6 +13,7 @@ public class Post {
     private Integer id;
 
     private String description;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Customer customer;
