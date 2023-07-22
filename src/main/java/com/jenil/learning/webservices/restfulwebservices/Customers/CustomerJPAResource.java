@@ -23,6 +23,9 @@ public class CustomerJPAResource {
     private CustomerRepository customerRepository;
 
     @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
     private CustomerDAO service;
 
     // GET /users
@@ -57,6 +60,24 @@ public class CustomerJPAResource {
     @PostMapping(path = "jpa/users")
     Customer newCustomer(@RequestBody Customer newCustomer) {
         return customerRepository.save(newCustomer);
+    }
+
+    @PostMapping(path = "/jpa/users/{id}/posts")
+    public ResponseEntity<Object> createCustomer(@PathVariable int id, @RequestBody Post post) {
+        Optional<Customer> optionalCustomer = customerRepository.findById(id);
+        if(!optionalCustomer.isPresent()) {
+            throw new CustomerNotFoundException("id" + id);
+        }
+
+        Customer customer = optionalCustomer.get();
+
+        post.setCustomer(customer);
+
+        postRepository.save(post);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(post.getId()).toUri();
+
+        return ResponseEntity.created(location).build();
     }
 
     @DeleteMapping(path = "jpa/users/{id}")
